@@ -2,4 +2,12 @@
     <string name="app_name">ToDoApp</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="add_todo">Add Todo</string>
+    <string name="task">Input a task here</string>
+    <string name="status">Status:</string>
+    <string name="pending">Pending</string>
+    <string name="done">Done</string>
+    <string name="photo">Photo</string>
+    <string name="notify">Notify Me</string>
+    <string name="five_minutes">in 5 mins</string>
+    <string name="ten_minutes">in 10 mins</string>
 </resources>
