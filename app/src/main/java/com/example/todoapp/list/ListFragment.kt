@@ -1,58 +1,56 @@
 package com.example.todoapp.list
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.*
 import androidx.databinding.DataBindingUtil
-import androidx.navigation.findNavController
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.*
 import com.example.todoapp.R
 import com.example.todoapp.data.Task
 import com.example.todoapp.databinding.FragmentListBinding
+import io.realm.Realm
 
 class ListFragment : Fragment() {
     private lateinit var binding: FragmentListBinding
-    private lateinit var listAdapter: ListAdapter
-    private var task = ArrayList<Task>()
+    private val listAdapter = ListAdapter()
+    lateinit var viewModel: ListViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_list, container, false)
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val factory = ViewModelFactory(this)
+        viewModel = ViewModelProvider(this, factory).get(ListViewModel::class.java)
 
-        binding.addTodoFab.setOnClickListener {
-            it.findNavController().navigate(ListFragmentDirections.nextAction())
-        }
-    }
+        binding.listViewModel = viewModel
+        binding.lifecycleOwner = this
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        setupAdapter()
-    }
-
-    private fun setupAdapter() {
-        task = arrayListOf(
-            Task("FIRST TASK"),
-            Task("SECOND TASK"),
-            Task("THIRD TASK"),
-            Task("Do assignments in English and Filipino and Araling Panlipunan and more.")
-        )
-
-        listAdapter = ListAdapter(task, activity)
         binding.recyclerView.apply {
             ItemTouchHelper(itemTouchHelper).attachToRecyclerView(this)
             adapter = listAdapter
-            layoutManager = LinearLayoutManager(activity)
         }
+
+        observers()
     }
+
+    private fun observers() {
+        viewModel.taskArray.observe(viewLifecycleOwner, { tasks ->
+            listAdapter.updateItem(tasks)
+        })
+    }
+
 
     private val itemTouchHelper = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
         override fun onMove(

@@ -1,19 +1,21 @@
 package com.example.todoapp.list
 
 import android.app.AlertDialog
+import android.content.Context
 import android.view.*
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todoapp.data.Task
 import com.example.todoapp.databinding.ListItemBinding
 
-class ListAdapter(task: ArrayList<Task>, val activity: FragmentActivity?) :
-    RecyclerView.Adapter<ListAdapter.ViewHolder>() {
-    private val taskArray: ArrayList<Task> = task
+class ListAdapter() : RecyclerView.Adapter<ListAdapter.ViewHolder>() {
+    private var taskArray: ArrayList<Task> = arrayListOf()
     private var removedPosition = 0
     private lateinit var removedItem: Task
+    lateinit var context : Context
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        context = parent.context
         return ViewHolder.from(parent)
     }
 
@@ -25,6 +27,11 @@ class ListAdapter(task: ArrayList<Task>, val activity: FragmentActivity?) :
         return taskArray.size
     }
 
+    fun updateItem(taskArray: ArrayList<Task>) {
+        this.taskArray = taskArray
+        notifyDataSetChanged()
+    }
+
     fun deleteItem(viewHolder: RecyclerView.ViewHolder) {
         removedPosition = viewHolder.adapterPosition
         removedItem = taskArray[removedPosition]
@@ -32,17 +39,16 @@ class ListAdapter(task: ArrayList<Task>, val activity: FragmentActivity?) :
         taskArray.removeAt(removedPosition)
         notifyItemRemoved(removedPosition)
 
-        AlertDialog.Builder(activity)
+        AlertDialog.Builder(context)
             .setTitle("Delete")
             .setMessage("Are you sure you want to delete this task?")
             .setNegativeButton(
                 "No"
             ) { _, _ ->
-                taskArray.add(removedPosition,removedItem)
+                taskArray.add(removedPosition, removedItem)
                 notifyItemInserted(removedPosition)
             }
-            .setPositiveButton("Yes") {
-                _, _ ->
+            .setPositiveButton("Yes") { _, _ ->
             }
             .create()
             .show()
