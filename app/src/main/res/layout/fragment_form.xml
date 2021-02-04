@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <variable
+            name="formViewModel"
+            type="com.example.todoapp.form.FormViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,10 +22,11 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:paddingStart="8dp"
             android:ems="10"
             android:hint="@string/task"
             android:inputType="textCapSentences"
+            android:paddingStart="8dp"
+            android:text="@={formViewModel.taskText}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -56,14 +59,15 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/pending"
-                android:checked="true" />
+                android:onClick="@{() -> formViewModel.checkedRadioButton(true)}"
+                android:text="@string/pending" />
 
             <RadioButton
                 android:id="@+id/done_radio_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:onClick="@{() -> formViewModel.checkedRadioButton(false)}"
                 android:text="@string/done" />
         </RadioGroup>
 
@@ -72,36 +76,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:drawableLeft="@drawable/ic_baseline_image_24"
             android:text="@string/photo"
             app:layout_constraintEnd_toEndOf="@+id/task_input"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/task_input"
-            app:layout_constraintTop_toBottomOf="@+id/status_radio_group"
-            android:drawableLeft="@drawable/ic_baseline_image_24" />
+            app:layout_constraintTop_toBottomOf="@+id/status_radio_group" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/add_todo_fab"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginBottom="32dp"
-            android:clickable="true"
-            android:src="@drawable/ic_baseline_check_24"
-            app:maxImageSize="40dp"
-            android:contentDescription="@string/add_todo"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:focusable="true" />
-
-        <CheckBox
-            android:id="@+id/checkBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:text="@string/five_minutes"
-            app:layout_constraintStart_toStartOf="@+id/textView2"
-            app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
         <TextView
             android:id="@+id/textView2"
@@ -115,15 +96,42 @@
             app:layout_constraintTop_toBottomOf="@+id/add_photo_button" />
 
         <CheckBox
+            android:id="@+id/checkBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:text="@string/five_minutes"
+            android:checked="@={formViewModel.notifyFive}"
+            app:layout_constraintStart_toStartOf="@+id/textView2"
+            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+        <CheckBox
             android:id="@+id/checkBox2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="@string/ten_minutes"
+            android:checked="@={formViewModel.notifyTen}"
             app:layout_constraintEnd_toEndOf="@+id/task_input"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/checkBox"
             app:layout_constraintTop_toTopOf="@+id/checkBox" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/add_todo_fab"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="32dp"
+            android:clickable="true"
+            android:contentDescription="@string/add_todo"
+            android:focusable="true"
+            android:onClick="@{() -> formViewModel.onClick()}"
+            android:src="@drawable/ic_baseline_check_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:maxImageSize="40dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

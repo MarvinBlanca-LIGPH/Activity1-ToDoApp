@@ -18,5 +18,10 @@
         android:id="@+id/formFragment"
         android:name="com.example.todoapp.form.FormFragment"
         android:label="Form"
-        tools:layout="@layout/fragment_form" />
+        tools:layout="@layout/fragment_form" >
+        <action
+            android:id="@+id/back_to_main"
+            app:destination="@id/listFragment" />
+
+    </fragment>
 </navigation>

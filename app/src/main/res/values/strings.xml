@@ -10,4 +10,5 @@
     <string name="notify">Notify Me</string>
     <string name="five_minutes">in 5 mins</string>
     <string name="ten_minutes">in 10 mins</string>
+    <string name="invalid">"Task field must not be empty. "</string>
 </resources>

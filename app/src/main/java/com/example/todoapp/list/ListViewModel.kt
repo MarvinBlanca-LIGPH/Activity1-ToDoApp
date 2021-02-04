@@ -1,14 +1,17 @@
 package com.example.todoapp.list
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.annotation.IdRes
+import androidx.core.os.bundleOf
+import androidx.lifecycle.*
 import androidx.navigation.fragment.findNavController
+import com.example.todoapp.R
 import com.example.todoapp.data.Task
+import com.example.todoapp.util.NavComponentUtil
+import com.example.todoapp.util.NavComponentUtil.navigate
 import io.realm.Realm
 
 class ListViewModel(
-    private val activity: ListFragment
+    private val fragment: ListFragment
 ) : ViewModel() {
     private val realm = Realm.getDefaultInstance()
     private val _taskArray = MutableLiveData<ArrayList<Task>>()
@@ -20,19 +23,6 @@ class ListViewModel(
     }
 
     private fun getTasksFromRealm() {
-        val task = arrayListOf(
-            Task("FIRST TASK", id = 1),
-            Task("SECOND TASK", id = 2),
-            Task("THIRD TASK", id = 3),
-            Task("Do assignments in English and Filipino and Araling Panlipunan and more.", id = 4)
-        )
-
-        realm.beginTransaction()
-        task.forEach {
-            realm.copyToRealmOrUpdate(it)
-        }
-        realm.commitTransaction()
-
         val realmData = realm.where(Task::class.java).findAll()
         val res = arrayListOf<Task>()
         realmData.forEach {
@@ -42,6 +32,8 @@ class ListViewModel(
     }
 
     fun addClicked() {
-        activity.findNavController().navigate(ListFragmentDirections.nextAction())
+//        val bundle = bundleOf("isEdit" to false)
+//        fragment.findNavController().navigate(R.id.next_action, bundle)
+        fragment.navigate(R.id.next_action,"isEdit" to false)
     }
 }

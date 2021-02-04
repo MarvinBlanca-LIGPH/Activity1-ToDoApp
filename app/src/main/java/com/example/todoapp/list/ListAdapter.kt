@@ -3,16 +3,20 @@ package com.example.todoapp.list
 import android.app.AlertDialog
 import android.content.Context
 import android.view.*
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todoapp.data.Task
 import com.example.todoapp.databinding.ListItemBinding
+import com.example.todoapp.util.RealmUtil.deleteItemFromRealm
 
-class ListAdapter() : RecyclerView.Adapter<ListAdapter.ViewHolder>() {
+class ListAdapter : RecyclerView.Adapter<ListAdapter.ViewHolder>() {
     private var taskArray: ArrayList<Task> = arrayListOf()
     private var removedPosition = 0
     private lateinit var removedItem: Task
-    lateinit var context : Context
+    lateinit var context: Context
+
+    companion object {
+        var itemClicked: ((task: Task) -> Unit)? = null
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
@@ -21,10 +25,6 @@ class ListAdapter() : RecyclerView.Adapter<ListAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(taskArray[position])
-    }
-
-    override fun getItemCount(): Int {
-        return taskArray.size
     }
 
     fun updateItem(taskArray: ArrayList<Task>) {
@@ -49,15 +49,18 @@ class ListAdapter() : RecyclerView.Adapter<ListAdapter.ViewHolder>() {
                 notifyItemInserted(removedPosition)
             }
             .setPositiveButton("Yes") { _, _ ->
+                removedItem.id?.let { deleteItemFromRealm(it) }
             }
             .create()
             .show()
     }
 
     class ViewHolder(private val binding: ListItemBinding) : RecyclerView.ViewHolder(binding.root) {
-
         fun bind(task: Task) {
-            binding.taskText.text = task.newTask
+            binding.taskText.apply {
+                text = task.newTask
+                setOnClickListener { itemClicked?.invoke(task) }
+            }
         }
 
         companion object {
@@ -67,5 +70,10 @@ class ListAdapter() : RecyclerView.Adapter<ListAdapter.ViewHolder>() {
                 return ViewHolder(binding)
             }
         }
+
+    }
+
+    override fun getItemCount(): Int {
+        return taskArray.size
     }
 }
