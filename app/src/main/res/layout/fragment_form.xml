@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="formViewModel"
             type="com.example.todoapp.form.FormViewModel" />
@@ -59,7 +60,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClick="@{() -> formViewModel.checkedRadioButton(true)}"
+                android:checked="@={formViewModel.pendingChecked}"
+                android:onClick="@{() -> formViewModel.statusRadioButton(true)}"
                 android:text="@string/pending" />
 
             <RadioButton
@@ -67,7 +69,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClick="@{() -> formViewModel.checkedRadioButton(false)}"
+                android:checked="@{formViewModel.isEdit() ? !formViewModel.pendingChecked : false}"
+                android:onClick="@{() -> formViewModel.statusRadioButton(false)}"
                 android:text="@string/done" />
         </RadioGroup>
 
@@ -95,28 +98,33 @@
             app:layout_constraintStart_toStartOf="@+id/task_input"
             app:layout_constraintTop_toBottomOf="@+id/add_photo_button" />
 
-        <CheckBox
-            android:id="@+id/checkBox"
-            android:layout_width="wrap_content"
+        <RadioGroup
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
-            android:text="@string/five_minutes"
-            android:checked="@={formViewModel.notifyFive}"
-            app:layout_constraintStart_toStartOf="@+id/textView2"
-            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="@+id/status_radio_group"
+            app:layout_constraintStart_toStartOf="@+id/status_radio_group"
+            app:layout_constraintTop_toBottomOf="@+id/textView2">
 
-        <CheckBox
-            android:id="@+id/checkBox2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="@string/ten_minutes"
-            android:checked="@={formViewModel.notifyTen}"
-            app:layout_constraintEnd_toEndOf="@+id/task_input"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/checkBox"
-            app:layout_constraintTop_toTopOf="@+id/checkBox" />
+            <RadioButton
+                android:id="@+id/notify_five"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="@{formViewModel.notificationTime == 5000 ? true : false}"
+                android:onClick="@{() -> formViewModel.notifyRadioButton(5000)}"
+                android:text="@string/five_minutes" />
+
+            <RadioButton
+                android:id="@+id/notify_ten"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="@{formViewModel.notificationTime == 10000 ? true : false}"
+                android:onClick="@{() -> formViewModel.notifyRadioButton(10000)}"
+                android:text="@string/ten_minutes" />
+        </RadioGroup>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/add_todo_fab"

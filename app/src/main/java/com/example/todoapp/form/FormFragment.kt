@@ -3,10 +3,8 @@ package com.example.todoapp.form
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.*
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.navArgs
 import com.example.todoapp.R
 import com.example.todoapp.databinding.FragmentFormBinding
 
@@ -31,10 +29,21 @@ class FormFragment : Fragment() {
         binding.lifecycleOwner = this
 
         val isEdit = arguments?.getBoolean("isEdit") ?: false
+        val taskId = arguments?.getInt("id")
+        val task = arguments?.getString("task")
+        val isPending = arguments?.getBoolean("isPending") ?: true
+        val photo = arguments?.getString("photo")
+        val notifyTime = arguments?.getInt("notifyTime") ?: 0
+
+        viewModel.isEdit.value = isEdit
 
         if (isEdit) {
-            viewModel.taskText.value = arguments?.getString("task")
-            //TODO HERE
+            viewModel.taskText.value = task
+            viewModel.taskId.value = taskId
+            viewModel.pendingChecked.value = isPending
+            viewModel.isPending.value = isPending
+            viewModel.photo = photo
+            viewModel.notificationTime.value = notifyTime
         }
     }
 }

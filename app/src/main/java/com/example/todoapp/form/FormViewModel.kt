@@ -5,40 +5,55 @@ import androidx.lifecycle.*
 import androidx.navigation.fragment.findNavController
 import com.example.todoapp.R
 import com.example.todoapp.data.Task
+import com.example.todoapp.util.HideKeyboardUtil
+import com.example.todoapp.util.RealmUtil.editItemFromRealm
 import com.example.todoapp.util.RealmUtil.getNextRealmId
 import com.example.todoapp.util.RealmUtil.insertItemToRealm
-import io.realm.Realm
 
 class FormViewModel(
     private val fragment: FormFragment
 ) : ViewModel() {
+    var isEdit = MutableLiveData<Boolean>()
+    var taskId = MutableLiveData<Int>()
     val taskText = MutableLiveData<String>()
-    var isPending: Boolean = true
-    var notifyFive: Boolean = false
-    var notifyTen: Boolean = false
+    var isPending = MutableLiveData<Boolean>()
+    val pendingChecked = MutableLiveData<Boolean>()
+    var photo: String? = ""
+    var notificationTime = MutableLiveData<Int>()
 
-    init {
+    fun statusRadioButton(pending: Boolean) {
+        isPending.value = pending
     }
 
-    fun checkedRadioButton(pending: Boolean) {
-        isPending = pending
+    fun notifyRadioButton(time: Int) {
+        notificationTime.value= time
     }
 
     fun onClick() {
+        fragment.activity?.let { HideKeyboardUtil.hideKeyboard(it) }
+
         if (!taskText.value.isNullOrEmpty()) {
+            val currId = if (isEdit.value == true) taskId.value else getNextRealmId()
             val task = Task(
                 taskText.value.toString(),
-                isPending,
+                isPending.value ?: true,
                 "",
-                notifyFive,
-                notifyTen,
-                getNextRealmId()
+                notificationTime.value ?: 0,
+                currId
             )
-            insertItemToRealm(task)
-            fragment.findNavController().navigate(FormFragmentDirections.backToMain())
 
+            if (isEdit.value == true) {
+                editItemFromRealm(task)
+            } else {
+                insertItemToRealm(task)
+            }
+            fragment.findNavController().navigate(FormFragmentDirections.backToMain())
         } else {
-            Toast.makeText(fragment.context, fragment.resources.getString(R.string.invalid), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                fragment.context,
+                fragment.resources.getString(R.string.invalid),
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 }

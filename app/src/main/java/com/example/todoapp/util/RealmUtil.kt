@@ -12,6 +12,19 @@ object RealmUtil {
         realm.commitTransaction()
     }
 
+    fun editItemFromRealm(task: Task) {
+        val realm = Realm.getDefaultInstance()
+        val item = realm.where(Task::class.java).equalTo("id", task.id).findAll()
+        item.forEach {
+            realm.beginTransaction()
+            it.newTask = task.newTask
+            it.isPending = task.isPending
+            it.notificationTime = task.notificationTime
+            it.photo = task.photo
+            realm.commitTransaction()
+        }
+    }
+
     fun deleteItemFromRealm(id: Int) {
         val realm = Realm.getDefaultInstance()
         val task = realm.where(Task::class.java).equalTo("id", id).findAll()
@@ -20,7 +33,7 @@ object RealmUtil {
         realm.commitTransaction()
     }
 
-    fun getNextRealmId() : Int {
+    fun getNextRealmId(): Int {
         val id = Realm.getDefaultInstance().where(Task::class.java).max("id")
         return if (id == null) {
             1

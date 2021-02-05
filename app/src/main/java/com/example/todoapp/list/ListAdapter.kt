@@ -62,7 +62,6 @@ class ListAdapter : RecyclerView.Adapter<ListAdapter.ViewHolder>() {
                 setOnClickListener { itemClicked?.invoke(task) }
             }
         }
-
         companion object {
             fun from(parent: ViewGroup): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
@@ -70,7 +69,6 @@ class ListAdapter : RecyclerView.Adapter<ListAdapter.ViewHolder>() {
                 return ViewHolder(binding)
             }
         }
-
     }
 
     override fun getItemCount(): Int {

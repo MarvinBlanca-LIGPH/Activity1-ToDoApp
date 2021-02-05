@@ -11,4 +11,6 @@
     <string name="five_minutes">in 5 mins</string>
     <string name="ten_minutes">in 10 mins</string>
     <string name="invalid">"Task field must not be empty. "</string>
+    <string name="channel_name">"Channel Name "</string>
+    <string name="channel_id">"Channel ID "</string>
 </resources>

@@ -1,14 +1,12 @@
 package com.example.todoapp.list
 
-import androidx.annotation.IdRes
-import androidx.core.os.bundleOf
+import android.widget.Toast
 import androidx.lifecycle.*
-import androidx.navigation.fragment.findNavController
 import com.example.todoapp.R
 import com.example.todoapp.data.Task
-import com.example.todoapp.util.NavComponentUtil
 import com.example.todoapp.util.NavComponentUtil.navigate
 import io.realm.Realm
+import com.example.todoapp.list.ListAdapter.Companion.itemClicked
 
 class ListViewModel(
     private val fragment: ListFragment
@@ -20,6 +18,22 @@ class ListViewModel(
 
     init {
         getTasksFromRealm()
+        onItemClick()
+    }
+
+    private fun onItemClick() {
+        itemClicked = {
+            Toast.makeText(fragment.context, it.toString(), Toast.LENGTH_SHORT).show()
+            fragment.navigate(
+                R.id.next_action,
+                "isEdit" to true,
+                "id" to it.id,
+                "task" to it.newTask,
+                "isPending" to it.isPending,
+                "photo" to it.photo,
+                "notifyTime" to it.notificationTime
+            )
+        }
     }
 
     private fun getTasksFromRealm() {
@@ -32,8 +46,6 @@ class ListViewModel(
     }
 
     fun addClicked() {
-//        val bundle = bundleOf("isEdit" to false)
-//        fragment.findNavController().navigate(R.id.next_action, bundle)
         fragment.navigate(R.id.next_action,"isEdit" to false)
     }
 }
