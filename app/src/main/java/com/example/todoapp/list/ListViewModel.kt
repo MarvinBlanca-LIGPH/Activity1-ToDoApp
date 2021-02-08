@@ -50,10 +50,10 @@ class ListViewModel(
     }
 
     private fun setNotifications() {
-        var channelIdArray = arrayListOf<String>()
-        var messageArray = arrayListOf<String>()
-        var idArray = arrayListOf<Int?>()
-        var durationArray = arrayListOf<Int>()
+        val channelIdArray = arrayListOf<String>()
+        val messageArray = arrayListOf<String>()
+        val idArray = arrayListOf<Int?>()
+        val durationArray = arrayListOf<Int>()
 
         _taskArray.value?.forEach {
             if (it.notificationTime > 0) {
@@ -73,20 +73,25 @@ class ListViewModel(
                 channelIdArray.add(channelId)
                 durationArray.add(it.notificationTime)
             }
-            if (channelIdArray.isNotEmpty()) {
-                AppUtil.callNotification(
-                    fragment.activity,
-                    channelIdArray,
-                    messageArray,
-                    idArray,
-                    durationArray
-                )
 
-                channelIdArray = arrayListOf()
-                messageArray = arrayListOf()
-                idArray = arrayListOf()
-                durationArray = arrayListOf()
-            }
+            checkIfHasNotification(channelIdArray, messageArray, idArray, durationArray)
+        }
+    }
+
+    private fun checkIfHasNotification(
+        channelIdArray: ArrayList<String>,
+        messageArray: ArrayList<String>,
+        idArray: ArrayList<Int?>,
+        durationArray: ArrayList<Int>
+    ) {
+        if (channelIdArray.isNotEmpty()) {
+            AppUtil.callNotification(
+                fragment.activity,
+                channelIdArray,
+                messageArray,
+                idArray,
+                durationArray
+            )
         }
     }
 }
