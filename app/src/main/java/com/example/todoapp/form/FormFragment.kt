@@ -1,12 +1,17 @@
 package com.example.todoapp.form
 
+import android.app.Activity
+import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.provider.MediaStore
 import android.view.*
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.todoapp.R
 import com.example.todoapp.databinding.FragmentFormBinding
+import com.example.todoapp.util.*
 
 class FormFragment : Fragment() {
     lateinit var binding: FragmentFormBinding
@@ -20,8 +25,8 @@ class FormFragment : Fragment() {
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val factory = FormViewModelFactory(this)
         viewModel = ViewModelProvider(this, factory).get(FormViewModel::class.java)
 
@@ -41,9 +46,22 @@ class FormFragment : Fragment() {
             viewModel.taskText.value = task
             viewModel.taskId.value = taskId
             viewModel.pendingChecked.value = isPending
-            viewModel.isPending.value = isPending
-            viewModel.photo = photo
+            viewModel.photo.value = photo
             viewModel.notificationTime.value = notifyTime
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == viewModel.createImage && resultCode == Activity.RESULT_OK) {
+            val image = data?.extras?.get("data") as Bitmap
+            val imageString = AppUtil.bitMapToString(image)
+            viewModel.photo.value = imageString
+        } else if (requestCode == viewModel.pickImage && resultCode == Activity.RESULT_OK) {
+            val imageUri = data?.data
+            val bitmap = MediaStore.Images.Media.getBitmap(context?.contentResolver, imageUri)
+            val imageString = AppUtil.bitMapToString(bitmap)
+            viewModel.photo.value = imageString
         }
     }
 }

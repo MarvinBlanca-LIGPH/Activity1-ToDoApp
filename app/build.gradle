@@ -70,4 +70,11 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
 
+    // CardView
+    def card_version = "1.0.0"
+    implementation "androidx.cardview:cardview:$card_version"
+
+    // Circular ImageView
+    def circular_img_version = "3.1.0"
+    implementation "de.hdodenhof:circleimageview:$circular_img_version"
 }

@@ -1,12 +1,12 @@
 package com.example.todoapp.list
 
-import android.app.AlertDialog
 import android.content.Context
 import android.view.*
 import androidx.recyclerview.widget.RecyclerView
+import com.example.todoapp.R
 import com.example.todoapp.data.Task
 import com.example.todoapp.databinding.ListItemBinding
-import com.example.todoapp.util.RealmUtil.deleteItemFromRealm
+import com.example.todoapp.util.*
 
 class ListAdapter : RecyclerView.Adapter<ListAdapter.ViewHolder>() {
     private var taskArray: ArrayList<Task> = arrayListOf()
@@ -39,29 +39,32 @@ class ListAdapter : RecyclerView.Adapter<ListAdapter.ViewHolder>() {
         taskArray.removeAt(removedPosition)
         notifyItemRemoved(removedPosition)
 
-        AlertDialog.Builder(context)
-            .setTitle("Delete")
-            .setMessage("Are you sure you want to delete this task?")
-            .setNegativeButton(
-                "No"
-            ) { _, _ ->
+        AppUtil.createAlertDialog(
+            context,
+            context.resources.getString(R.string.delete_title),
+            context.resources.getString(R.string.delete_message),
+            context.resources.getString(R.string.button_no),
+            context.resources.getString(R.string.button_yes),
+            negativeButtonClicked = {
                 taskArray.add(removedPosition, removedItem)
                 notifyItemInserted(removedPosition)
+            },
+            positiveButtonClicked = {
+                removedItem.id?.let { RealmUtil.deleteItemFromRealm(it) }
             }
-            .setPositiveButton("Yes") { _, _ ->
-                removedItem.id?.let { deleteItemFromRealm(it) }
-            }
-            .create()
-            .show()
+        )
     }
 
     class ViewHolder(private val binding: ListItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(task: Task) {
-            binding.taskText.apply {
-                text = task.newTask
-                setOnClickListener { itemClicked?.invoke(task) }
+            binding.taskText.text = task.newTask
+            binding.cardView.setOnClickListener { itemClicked?.invoke(task) }
+            if (task.photo.isNotEmpty()) {
+                val bitmap = AppUtil.stringToBitmap(task.photo)
+                binding.circleImage.setImageBitmap(bitmap)
             }
         }
+
         companion object {
             fun from(parent: ViewGroup): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)

@@ -25,6 +25,16 @@ object RealmUtil {
         }
     }
 
+    fun notificationTriggered(id: Int) {
+        val realm = Realm.getDefaultInstance()
+        val item = realm.where(Task::class.java).equalTo("id", id).findAll()
+        item.forEach {
+            realm.beginTransaction()
+            it.notificationTime = 0
+            realm.commitTransaction()
+        }
+    }
+
     fun deleteItemFromRealm(id: Int) {
         val realm = Realm.getDefaultInstance()
         val task = realm.where(Task::class.java).equalTo("id", id).findAll()

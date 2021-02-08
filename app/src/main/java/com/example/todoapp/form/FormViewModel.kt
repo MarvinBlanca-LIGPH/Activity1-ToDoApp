@@ -1,51 +1,76 @@
 package com.example.todoapp.form
 
+import android.content.Intent
+import android.provider.MediaStore
 import android.widget.Toast
 import androidx.lifecycle.*
 import androidx.navigation.fragment.findNavController
 import com.example.todoapp.R
 import com.example.todoapp.data.Task
-import com.example.todoapp.util.HideKeyboardUtil
-import com.example.todoapp.util.RealmUtil.editItemFromRealm
-import com.example.todoapp.util.RealmUtil.getNextRealmId
-import com.example.todoapp.util.RealmUtil.insertItemToRealm
+import com.example.todoapp.util.*
 
 class FormViewModel(
     private val fragment: FormFragment
 ) : ViewModel() {
-    var isEdit = MutableLiveData<Boolean>()
-    var taskId = MutableLiveData<Int>()
+    val isEdit = MutableLiveData<Boolean>()
+    val taskId = MutableLiveData<Int>()
     val taskText = MutableLiveData<String>()
-    var isPending = MutableLiveData<Boolean>()
     val pendingChecked = MutableLiveData<Boolean>()
-    var photo: String? = ""
-    var notificationTime = MutableLiveData<Int>()
+    val notificationTime = MutableLiveData<Int>()
+    val photo = MutableLiveData<String>()
+    val fiveMinutesInMillis = fragment.resources.getInteger(R.integer.five_minutes_millis)
+    val tenMinutesInMillis = fragment.resources.getInteger(R.integer.ten_minutes_millis)
+    val createImage = 0
+    val pickImage = 1
 
     fun statusRadioButton(pending: Boolean) {
-        isPending.value = pending
+        pendingChecked.value = pending
     }
 
     fun notifyRadioButton(time: Int) {
-        notificationTime.value= time
+        notificationTime.value = time
+    }
+
+    fun photoClicked() {
+        var intent: Intent
+        fragment.context?.let { context ->
+            AppUtil.createAlertDialog(
+                context,
+                context.resources.getString(R.string.camera_title),
+                context.resources.getString(R.string.camera_message),
+                context.resources.getString(R.string.button_gallery),
+                context.resources.getString(R.string.button_camera),
+                negativeButtonClicked = {
+                    intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    fragment.startActivityForResult(intent, pickImage)
+                },
+                positiveButtonClicked = {
+                    intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                    if (fragment.activity?.packageManager?.let { intent?.resolveActivity(it) } != null) {
+                        fragment.startActivityForResult(intent, createImage)
+                    }
+                }
+            )
+        }
     }
 
     fun onClick() {
-        fragment.activity?.let { HideKeyboardUtil.hideKeyboard(it) }
+        fragment.activity?.let { AppUtil.hideKeyboard(it) }
 
         if (!taskText.value.isNullOrEmpty()) {
-            val currId = if (isEdit.value == true) taskId.value else getNextRealmId()
+            val currId = if (isEdit.value == true) taskId.value else RealmUtil.getNextRealmId()
             val task = Task(
                 taskText.value.toString(),
-                isPending.value ?: true,
-                "",
+                pendingChecked.value ?: true,
+                photo.value ?: "",
                 notificationTime.value ?: 0,
                 currId
             )
 
             if (isEdit.value == true) {
-                editItemFromRealm(task)
+                RealmUtil.editItemFromRealm(task)
             } else {
-                insertItemToRealm(task)
+                RealmUtil.insertItemToRealm(task)
             }
             fragment.findNavController().navigate(FormFragmentDirections.backToMain())
         } else {

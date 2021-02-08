@@ -19,7 +19,6 @@ class ListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_list, container, false)
-
         return binding.root
     }
 
@@ -49,9 +48,7 @@ class ListFragment : Fragment() {
             recyclerView: RecyclerView,
             viewHolder: RecyclerView.ViewHolder,
             target: RecyclerView.ViewHolder
-        ): Boolean {
-            TODO("Not yet implemented")
-        }
+        ): Boolean = false
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             listAdapter.deleteItem(viewHolder)

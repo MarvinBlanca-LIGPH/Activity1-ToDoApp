@@ -60,7 +60,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:checked="@={formViewModel.pendingChecked}"
+                android:checked="@{!formViewModel.isEdit() ? true : formViewModel.pendingChecked}"
                 android:onClick="@{() -> formViewModel.statusRadioButton(true)}"
                 android:text="@string/pending" />
 
@@ -69,7 +69,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:checked="@{formViewModel.isEdit() ? !formViewModel.pendingChecked : false}"
+                android:enabled="@{formViewModel.isEdit() ? true: false}"
+                android:checked="@{formViewModel.isEdit() ? !formViewModel.pendingChecked: false}"
                 android:onClick="@{() -> formViewModel.statusRadioButton(false)}"
                 android:text="@string/done" />
         </RadioGroup>
@@ -81,6 +82,7 @@
             android:layout_marginTop="16dp"
             android:drawableLeft="@drawable/ic_baseline_image_24"
             android:text="@string/photo"
+            android:onClick="@{() -> formViewModel.photoClicked()}"
             app:layout_constraintEnd_toEndOf="@+id/task_input"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/task_input"
@@ -112,8 +114,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:checked="@{formViewModel.notificationTime == 5000 ? true : false}"
-                android:onClick="@{() -> formViewModel.notifyRadioButton(5000)}"
+                android:checked="@{formViewModel.notificationTime == formViewModel.fiveMinutesInMillis ? true : false}"
+                android:onClick="@{() -> formViewModel.notifyRadioButton(formViewModel.fiveMinutesInMillis)}"
                 android:text="@string/five_minutes" />
 
             <RadioButton
@@ -121,8 +123,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:checked="@{formViewModel.notificationTime == 10000 ? true : false}"
-                android:onClick="@{() -> formViewModel.notifyRadioButton(10000)}"
+                android:checked="@{formViewModel.notificationTime == formViewModel.tenMinutesInMillis ? true : false}"
+                android:onClick="@{() -> formViewModel.notifyRadioButton(formViewModel.tenMinutesInMillis)}"
                 android:text="@string/ten_minutes" />
         </RadioGroup>
 
