@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="formViewModel"
+            type="com.example.todoapp.form.FormViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <EditText
+            android:id="@+id/task_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:ems="10"
+            android:hint="@string/task"
+            android:inputType="textCapSentences"
+            android:paddingStart="8dp"
+            android:text="@={formViewModel.taskText}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/status"
+            app:layout_constraintEnd_toEndOf="@+id/task_input"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/task_input"
+            app:layout_constraintTop_toBottomOf="@+id/task_input" />
+
+        <RadioGroup
+            android:id="@+id/status_radio_group"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="@+id/task_input"
+            app:layout_constraintStart_toStartOf="@+id/task_input"
+            app:layout_constraintTop_toBottomOf="@+id/textView">
+
+            <RadioButton
+                android:id="@+id/pending_radio_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="@{!formViewModel.isEdit() ? true : formViewModel.pendingChecked}"
+                android:onClick="@{() -> formViewModel.statusRadioButton(true)}"
+                android:text="@string/pending" />
+
+            <RadioButton
+                android:id="@+id/done_radio_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:enabled="@{formViewModel.isEdit() ? true: false}"
+                android:checked="@{formViewModel.isEdit() ? !formViewModel.pendingChecked: false}"
+                android:onClick="@{() -> formViewModel.statusRadioButton(false)}"
+                android:text="@string/done" />
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/add_photo_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:drawableLeft="@drawable/ic_baseline_image_24"
+            android:text="@string/photo"
+            android:onClick="@{() -> formViewModel.photoClicked()}"
+            app:layout_constraintEnd_toEndOf="@+id/task_input"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/task_input"
+            app:layout_constraintTop_toBottomOf="@+id/status_radio_group" />
+
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/notify"
+            app:layout_constraintEnd_toEndOf="@+id/task_input"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/task_input"
+            app:layout_constraintTop_toBottomOf="@+id/add_photo_button" />
+
+        <RadioGroup
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="@+id/status_radio_group"
+            app:layout_constraintStart_toStartOf="@+id/status_radio_group"
+            app:layout_constraintTop_toBottomOf="@+id/textView2">
+
+            <RadioButton
+                android:id="@+id/notify_five"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="@{formViewModel.notificationTime == formViewModel.fiveMinutesInMillis ? true : false}"
+                android:onClick="@{() -> formViewModel.notifyRadioButton(formViewModel.fiveMinutesInMillis)}"
+                android:text="@string/five_minutes" />
+
+            <RadioButton
+                android:id="@+id/notify_ten"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="@{formViewModel.notificationTime == formViewModel.tenMinutesInMillis ? true : false}"
+                android:onClick="@{() -> formViewModel.notifyRadioButton(formViewModel.tenMinutesInMillis)}"
+                android:text="@string/ten_minutes" />
+        </RadioGroup>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/add_todo_fab"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="32dp"
+            android:clickable="true"
+            android:contentDescription="@string/add_todo"
+            android:focusable="true"
+            android:onClick="@{() -> formViewModel.onClick()}"
+            android:src="@drawable/ic_baseline_check_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:maxImageSize="40dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
